@@ -59,5 +59,4 @@ const MeetingSetup = ({
     </div>
   );
 };
-
 export default MeetingSetup;
