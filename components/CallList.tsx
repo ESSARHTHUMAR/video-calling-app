@@ -5,9 +5,10 @@
 import { useGetCalls } from "@/hooks/useGetCalls";
 import { Call, CallRecording } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 import MeetingCard from "./MeetingCard";
+import { useToast } from "./ui/use-toast";
 
 const CallList = ({ type }: { type: "ended" | 'upcoming' | "recordings" }) => {
   const { endedCalls, recordings, upcomingCalls, isLoading } = useGetCalls();
@@ -46,6 +47,28 @@ const CallList = ({ type }: { type: "ended" | 'upcoming' | "recordings" }) => {
     }
   };
 
+  const {toast} = useToast();
+
+  useEffect(() => {
+    
+    const fetchRecording = async () => {
+      try {
+        const callData = await Promise.all(recordings?.map((meeting) => meeting.queryRecordings()))
+  
+        const recording = callData.filter(call => call.recordings.length > 0).flatMap(call => call.recordings)
+              setRecording(recording);
+        
+      } catch (error) {
+        toast({
+          title: 'Please try again later!'
+        })
+      }
+    }
+
+    if(type === 'recordings') fetchRecording();
+
+  }, [type, recordings])
+
   const calls = getCalls();
   const callsNoMessages = getNoCallsMessage();
 
@@ -63,7 +86,7 @@ const CallList = ({ type }: { type: "ended" | 'upcoming' | "recordings" }) => {
                     ? 'icons/upcoming.svg'
                     : 'icons/recordings.svg'
             }
-            title={(meeting as Call).state?.custom?.description.substring(0,20) || 'No description'}
+            title={(meeting as Call).state?.custom?.description?.substring(0,20) || meeting?.filename?.substring(0,20) || 'No description'}
             date={meeting.state?.startsAt?.toLocaleString() || meeting.start_time?.toLocaleString()}
             isPreviousMeeting={type === 'ended'}
             buttonIcon={type === 'recordings' ? '/icons/play.svg' : undefined}
