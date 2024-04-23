@@ -30,7 +30,6 @@ export const useGetCalls = () => {
             ],
           },
         });
-
         setCalls(calls);
       } catch (error) {
         console.log(error);
@@ -38,7 +37,8 @@ export const useGetCalls = () => {
         setIsLoading(false);
       }
     };
-  }, [isLoading, user?.id]);
+    loadCalls();
+  }, [client, user?.id]);
 
   const now = new Date();
 
