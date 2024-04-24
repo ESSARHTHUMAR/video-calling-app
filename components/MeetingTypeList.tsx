@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import HomeCard from "./HomeCard";
@@ -10,11 +10,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "./ui/textarea";
 import ReactDatePicker from "react-datepicker"
 import { Input } from "./ui/input";
+import { useUser } from "@clerk/nextjs";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<
-    "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting"
-  >();
+    "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting">();
   const [values, setValues] = useState({
     description: "",
     dateTime: new Date(),
